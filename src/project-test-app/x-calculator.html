@@ -47,24 +47,24 @@
         <div data-previous-operand class="previous-operand">[[previousOperand]]</div>
         <div data-current-operand class="current-operand"> [[currentOperand]] </div>
       </div>
-      <x-button value="AC" class="span-two" data-all-clear></x-button>
-      <x-button value="DEL"></x-button>
-      <x-button value="÷"></x-button>
-      <x-button value="1"></x-button>
-      <x-button value="2"></x-button>
-      <x-button value="3"></x-button>
-      <x-button value="*"></x-button>
-      <x-button value="4"></x-button>
-      <x-button value="5"></x-button>
-      <x-button value="6"></x-button>
-      <x-button value="+"></x-button>
-      <x-button value="7"></x-button>
-      <x-button value="8"></x-button>
-      <x-button value="9"></x-button>
-      <x-button value="-"></x-button>
-      <x-button value="."></x-button>
-      <x-button value="0"></x-button>
-      <x-button value="=" class="span-two" data-equals></x-button>
+      <x-button value="AC" type="special" class="span-two"></x-button>
+      <x-button value="DEL" type="special"></x-button>
+      <x-button value="÷" type="operator"></x-button>
+      <x-button value="1" type="number"></x-button>
+      <x-button value="2" type="number"></x-button>
+      <x-button value="3" type="number"></x-button>
+      <x-button value="*" type="operator"></x-button>
+      <x-button value="4" type="number"></x-button>
+      <x-button value="5" type="number"></x-button>
+      <x-button value="6" type="number"></x-button>
+      <x-button value="+" type="operator"></x-button>
+      <x-button value="7" type="number"></x-button>
+      <x-button value="8" type="number"></x-button>
+      <x-button value="9" type="number"></x-button>
+      <x-button value="-" type="operator"></x-button>
+      <x-button value="." type="number"></x-button>
+      <x-button value="0" type="number"></x-button>
+      <x-button value="=" type="special" class="span-two"></x-button>
     </div>
   </template>
 
@@ -73,17 +73,65 @@
       static get is() { return 'x-calculator'; }
       static get properties() {
         return { 
-          previousOperand: Number,
-          currentOperand: Number
+          previousOperand: String,
+          currentOperand: String,
+          operator: String
         };
+      }
+
+      constructor(){
+        super();
+        this.currentOperand = '0';
+        this.previousOperand = '0';
       }
 
       ready(){
         super.ready();
         window.addEventListener('pulsar', (e) => {
-          this.currentOperand = e.detail.press;
+          const { value, type } = e.detail;
+          this.logicCalculator(value, type);
         });
-        
+      }
+
+      cal = () => {
+        const previousOperand = parseFloat(this.previousOperand);
+        const currentOperand = parseFloat(this.currentOperand);
+
+        if(this.operator === '+') return previousOperand + currentOperand;
+        if(this.operator === '-') return previousOperand - currentOperand;
+        if(this.operator === '*') return previousOperand * currentOperand;
+        if(this.operator === '÷') return previousOperand / currentOperand;
+      }
+
+      logicCalculator = (value, type) => {
+        if(type === 'special'){
+          if(value === 'AC'){
+            this.currentOperand = '';
+            this.previousOperand = '';
+            this.operator = '';
+          }
+          if(value === 'DEL'){
+            const len = this.currentOperand.length;
+            this.currentOperand = this.currentOperand.substring(0, len-1);
+          }
+        }
+     
+        if(type === 'number'){
+          this.currentOperand += value;
+        }
+
+        if(type === 'operator'){
+          if(this.previousOperand === ''){
+            this.operator = value;
+            this.previousOperand = this.currentOperand;
+            this.currentOperand = '';
+          }
+          else{
+            this.operator = value;
+            this.previousOperand = this.cal();
+            this.currentOperand = '';
+          }
+        }
       }
     }
     

@@ -27,14 +27,15 @@
       static get is() { return 'x-button'; }
       static get properties() {
         return {
-            value: String
+            value: String,
+            type: String,
         };
       }
 
       _pressButton() {
         this.dispatchEvent( 
             new CustomEvent('pulsar', { 
-                detail: { press: this.value },
+                detail: { value: this.value, type: this.type },
                 bubbles: true,
                 composed: true
                 },
