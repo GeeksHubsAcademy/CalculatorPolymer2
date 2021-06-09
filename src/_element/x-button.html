@@ -1,0 +1,48 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="x-button">
+  <template>
+    <style>
+      button {
+        cursor: pointer;
+        font-size: 2rem;
+        border: 1px solid white;
+        outline: none;
+        background-color: rgba(255, 255, 255, 0.75);
+        width: 100%;
+        height: 100%;
+      }
+
+      button:hover {
+        background-color: rgba(255, 255, 255, 0.9);
+      }
+    </style>
+
+    <button on-click="_pressButton">[[value]]</button>
+
+  </template>
+
+  <script>
+    class XButton extends Polymer.Element {
+      static get is() { return 'x-button'; }
+      static get properties() {
+        return {
+            value: String
+        };
+      }
+
+      _pressButton() {
+        this.dispatchEvent( 
+            new CustomEvent('pulsar', { 
+                detail: { press: this.value },
+                bubbles: true,
+                composed: true
+                },
+            ),
+        )
+      }
+    }
+
+    window.customElements.define(XButton.is, XButton);
+  </script>
+</dom-module>

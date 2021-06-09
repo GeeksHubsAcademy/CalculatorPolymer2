@@ -1,0 +1,93 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="/src/_element/x-button.html">
+
+<link rel="import" href="/src/custom-styles/reset.html">
+
+<dom-module id="x-calculator">
+  <template>
+    <style include="reset">
+      .calculator-grid {
+        display: grid;
+        justify-content: center;
+        align-content: center;
+        min-height: 100vh;
+        grid-template-columns: repeat(4, 100px);
+        grid-template-rows: minmax(120px, auto) repeat(5, 100px);
+        background: linear-gradient(to right, #00AAFF, #00FF6C);
+      }
+
+      .span-two {
+        grid-column: span 2;
+      }
+      
+      .output {
+        grid-column: 1 / -1;
+        background-color: rgba(0, 0, 0, 0.75);
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        flex-direction: column;
+        padding: 10px;
+        word-wrap: break-word;
+        word-break: break-all;
+      }
+      .output .previous-operand {
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 1.5rem;
+      }
+      .output .current-operand {
+        color: white;
+        font-size: 2.5rem;
+      }
+    </style>
+
+    <div class="calculator-grid">
+      <div class="output">
+        <div data-previous-operand class="previous-operand">[[previousOperand]]</div>
+        <div data-current-operand class="current-operand"> [[currentOperand]] </div>
+      </div>
+      <x-button value="AC" class="span-two" data-all-clear></x-button>
+      <x-button value="DEL"></x-button>
+      <x-button value="÷"></x-button>
+      <x-button value="1"></x-button>
+      <x-button value="2"></x-button>
+      <x-button value="3"></x-button>
+      <x-button value="*"></x-button>
+      <x-button value="4"></x-button>
+      <x-button value="5"></x-button>
+      <x-button value="6"></x-button>
+      <x-button value="+"></x-button>
+      <x-button value="7"></x-button>
+      <x-button value="8"></x-button>
+      <x-button value="9"></x-button>
+      <x-button value="-"></x-button>
+      <x-button value="."></x-button>
+      <x-button value="0"></x-button>
+      <x-button value="=" class="span-two" data-equals></x-button>
+    </div>
+  </template>
+
+  <script>
+    class XCalculator extends Polymer.Element {
+      static get is() { return 'x-calculator'; }
+      static get properties() {
+        return { 
+          previousOperand: Number,
+          currentOperand: Number
+        };
+      }
+
+      ready(){
+        super.ready();
+        window.addEventListener('pulsar', (e) => {
+          this.currentOperand = e.detail.press;
+        });
+        
+      }
+    }
+    
+
+    window.customElements.define(XCalculator.is, XCalculator);
+  </script>
+</dom-module>
